@@ -1,27 +1,18 @@
 
 import os, re
 
-print('Program Start')
-
-# Get path 
-cwd_path = os.getcwd()
-print('Current path:', cwd_path)
-
-# get cwd name
-cwd = cwd_path.split('\\')[-1]
-print('CWD:',cwd)
+cwd_path = os.getcwd()    
+cwd = cwd_path.split('\\')[-1]      # get cwd name
+separator = " - "
 
 
-print()
-print('--- Things in cwd ---')
-print()
+def get_filename(path):
+    return path.split('\\')[-1]
 
-# Get list of things in cwd
-things = os.listdir(cwd_path)
 
-#-------------- Sort them by file name
 def atoi(text):
     return int(text) if text.isdigit() else text
+
 
 def natural_keys(text):
     '''
@@ -29,39 +20,54 @@ def natural_keys(text):
     http://nedbatchelder.com/blog/200712/human_sorting.html
     (See Toothy's implementation in the comments)
     '''
-    return [ atoi(c) for c in re.split('(\d+)', text) ]
+    return [atoi(c) for c in re.split('(\d+)', text)]
 
-things.sort(key=natural_keys)
+def get_things():
+    things = os.listdir(cwd_path)       # get a list of item in cwd
+    things.sort(key=natural_keys)       # sort items in cwd 'naturally'
+    return things
 
-#--------------
-
-
-thing_paths = [os.path.join(cwd_path, thing) for thing in things]
-
-for idx, thing_path in enumerate(thing_paths):
-    if os.path.isfile(thing_path): print('file: {}'.format(things[idx]) )
-    else: print('not file: {}'.format(things[idx]) )
+def extract_files(things):
+    return [thing for thing in things if os.path.isfile(os.path.join(cwd_path, thing))]
 
 
+def get_new_filenames(files):
+    new_filenames = []
 
-print() 
+    num = 1
 
-alist=[
-    "some1thing",
-    "some12thing",
-    "some17thing",
-    "some2thing",
-    "some25thing",
-    "some29thing"]
+    for file in files:
+        ext = file.split('.')[-1]
 
-alist.sort(key=natural_keys)
-print(alist)
+        new_name = cwd + separator + str(num) + '.' + ext
 
-# print(item_paths)
+        if new_name in files:
+            raise ValueError('Name already in dir: {}'.format(new_name))
+        
+        new_filenames.append(new_name)
 
+        num += 1
 
+    return new_filenames
 
-# get list of files in cwd
-# sort files
-# rename all files
+def rename_files(files, new_filenames): pass
 
+def main():
+    # print('Current path:', cwd_path)
+    # print('CWD:', cwd)
+
+    print()
+    print('--- Things in cwd ---')
+    print()
+
+    things = get_things()
+    files = extract_files(things)
+    
+    new_filenames = get_new_filenames(files)
+
+    rename_files(files, new_filenames)
+    
+    return
+
+if __name__ == "__main__":
+    main()
