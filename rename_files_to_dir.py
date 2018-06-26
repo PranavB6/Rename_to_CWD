@@ -1,5 +1,5 @@
 
-SKIP = ['cwd_rename.py', 'README.md']
+SKIP = ['rename_files_to_dir.py', 'README.md']
 
 default_sep_start = " - "
 default_sep_end = ""
